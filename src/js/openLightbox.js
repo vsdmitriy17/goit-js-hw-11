@@ -10,7 +10,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 //             captionDelay - указывает задержку появления подписи
 //             enableKeyboard - позволяет навигацию с клавиатуры (<- ->) и выход при нажатии Esc
 function openLightbox() {
-    let lightbox = new SimpleLightbox('.photo-card a',
+    let lightbox = new SimpleLightbox(".photo-card a",
         {
             captionSelector: 'img',
             captionType: 'attr',
@@ -19,6 +19,7 @@ function openLightbox() {
             captionDelay: 250,
             enableKeyboard: true,
         });
+    lightbox.refresh();
     lightbox.open();
 };
 

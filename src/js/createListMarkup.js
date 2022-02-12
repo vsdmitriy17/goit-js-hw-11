@@ -5,7 +5,7 @@ function createListMarkup(data) {
         return `
                 
                     <div class="photo-card">
-                        <a href="${webformatURL}">
+                        <a href="${largeImageURL}">
                             <img class="card" src="${webformatURL}" alt="${tags}" loading="lazy" />
                         </a>
                         <div class="info">
