@@ -31,11 +31,13 @@ async function onSearchFormSubmit(evt) {
     imgApiService.resetPage();
     imgApiService.searchQuery = name;
     try {
+
         Loading.circle({onSearchFormSubmit: true, svgSize: '80px',});
         const dataObj = await imgApiService.fetchImages();
         Loading.remove();
         const dataImg = dataObj.data.hits;
         console.log(dataImg);
+
         if (dataImg.length === 0) {
             return Notiflix.Notify.success('Sorry, there are no images matching your search query. Please try again.');  
         };
@@ -51,13 +53,15 @@ async function onSearchFormSubmit(evt) {
 
 async function onBtnLoadMoreClick(evt) {
     try {
-        Loading.circle({ onSearchFormSubmit: true, svgSize: '80px', });
         elems.btnLoadMoreEl.disabled = true;
+
+        Loading.circle({ onSearchFormSubmit: true, svgSize: '80px', });
         const dataObj = await imgApiService.fetchImages();
-        elems.btnLoadMoreEl.disabled = false;
         Loading.remove();
         const dataImg = dataObj.data.hits;
         console.log(dataImg);
+
+        elems.btnLoadMoreEl.disabled = false;
         if (imgApiService.page > (dataObj.data.totalHits / imgApiService.per_page)) {
             elems.btnLoadMoreEl.classList.add('displayNone');
             return Notiflix.Notify.success('We are sorry, but you have reached the end of search results.');  
@@ -81,3 +85,11 @@ function onGalleryCardClick(evt) {
     }
     openLightbox();
 };
+
+// function createDataImg() {
+//     Loading.circle({ onSearchFormSubmit: true, svgSize: '80px', });
+//     const dataObj = await imgApiService.fetchImages();
+//     Loading.remove();
+//     const dataImg = dataObj.data.hits;
+//     console.log(dataImg);
+// };
