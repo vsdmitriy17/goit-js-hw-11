@@ -7,7 +7,7 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { openLightbox } from "./openLightbox.js";
 import { createListMarkup, cleanGallery } from "./createListMarkup.js";
-import { notiflixOptions } from "./notiflixOptions.js";
+import { notiflixOptions, notiflixReportOptions } from "./notiflixOptions.js";
 
 elems.formEl.addEventListener('submit', onSearchFormSubmit);
 elems.divGalleryEl.addEventListener('click', onGalleryCardClick);
@@ -25,7 +25,7 @@ async function onSearchFormSubmit(evt) {
     const name = elems.inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
     evt.target.reset();
     if (name === "") {
-        return Notiflix.Report.warning('WORNING!', 'Please enter request', 'Ok');
+        return Notiflix.Report.warning('WORNING!', 'Please enter request.', 'Ok');
     };
     cleanGallery();
     imgApiService.resetPage();

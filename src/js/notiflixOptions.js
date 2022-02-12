@@ -72,4 +72,59 @@ const notiflixOptions = Notiflix.Notify.init({
   },
 });
 
-export { notiflixOptions };
+const notiflixReportOptions = Notiflix.Report.init({
+  className: 'notiflix-report',
+  width: '350px',
+  backgroundColor: 'rgb(142, 142, 235)',
+  borderRadius: '25px',
+  rtl: false,
+  zindex: 4002,
+  backOverlay: true,
+  backOverlayColor: 'rgba(0,0,0,0.5)',
+  fontFamily: 'Quicksand',
+  svgSize: '110px',
+  plainText: true,
+  titleFontSize: '16px',
+  titleMaxLength: 34,
+  messageFontSize: '24px',
+  messageMaxLength: 400,
+  buttonFontSize: '14px',
+  buttonMaxLength: 34,
+  cssAnimation: true,
+  cssAnimationDuration: 360,
+  cssAnimationStyle: 'fade',
+  success: {
+    svgColor: '#32c682',
+    titleColor: '#1e1e1e',
+    messageColor: '#242424',
+    buttonBackground: '#32c682',
+    buttonColor: '#fff',
+    backOverlayColor: 'rgba(50,198,130,0.2)',
+  },
+  failure: {
+    svgColor: '#ff5549',
+    titleColor: '#1e1e1e',
+    messageColor: '#242424',
+    buttonBackground: '#ff5549',
+    buttonColor: '#fff',
+    backOverlayColor: 'rgba(255,85,73,0.2)',
+  },
+  warning: {
+    svgColor: '#eebf31',
+    titleColor: '#1e1e1e',
+    messageColor: '#242424',
+    buttonBackground: '#eebf31',
+    buttonColor: '#fff',
+    backOverlayColor: 'rgba(238,191,49,0.2)',
+  },
+  info: {
+    svgColor: '#26c0d3',
+    titleColor: '#1e1e1e',
+    messageColor: '#242424',
+    buttonBackground: '#26c0d3',
+    buttonColor: '#fff',
+    backOverlayColor: 'rgba(38,192,211,0.2)',
+  },
+});
+
+export { notiflixOptions, notiflixReportOptions };
