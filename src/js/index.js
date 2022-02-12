@@ -27,6 +27,8 @@ async function onSearchFormSubmit(evt) {
         Loading.circle({onSearchFormSubmit: true, svgSize: '50px',});
         const dataObj = await fetchImages(name);
         Loading.remove();
+        evt.target.reset();
+        btnDisable();
         const dataImg = dataObj.data.hits;
         console.log(dataImg);
         if (dataImg.length === 0) {
