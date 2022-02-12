@@ -17,12 +17,12 @@ elems.btnLoadMoreEl.classList.add('displayNone');
 
 const imgApiService = new ImgApiService();
 
-const { height: cardHeight } = elems.divGalleryEl.firstElementChild.getBoundingClientRect();
+// const { height: cardHeight } = elems.divGalleryEl.firstElementChild.getBoundingClientRect();
 
-window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-});
+// window.scrollBy({
+//     top: cardHeight * 2,
+//     behavior: 'smooth',
+// });
 
 async function onSearchFormSubmit(evt) {
     evt.preventDefault();
