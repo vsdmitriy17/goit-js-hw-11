@@ -1,36 +1,35 @@
 import '../sass/main.scss';
-import axios from "axios";
 import Notiflix from 'notiflix';
 import { Loading } from 'notiflix/build/notiflix-loading-aio';
+import { elems } from "./elems.js";
+import ImgApiService from "./fetchImages.js";
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { fetchImages } from "./fetchImages.js";
+import { openLightbox } from "./openLightbox.js";
+import { createListMarkup, cleanPage } from "./createListMarkup.js";
 import { notiflixOptions } from "./notiflixOptions.js";
 
-const formEl = document.querySelector('form#search-form');
-const inputEl = document.querySelector('.form__input');
-const btnSearchEl = document.querySelector('.form__btn');
-const divGalleryEl = document.querySelector('.gallery');
-const btnLoadMoreEl = document.querySelector('.load-more');
+elems.formEl.addEventListener('submit', onSearchFormSubmit);
+elems.divGalleryEl.addEventListener('click', onGalleryCardClick);
+elems.btnLoadMoreEl.addEventListener('click', onBtnLoadMoreClick);
 
+elems.btnLoadMoreEl.classList.add('displayNone');
 
-
-formEl.addEventListener('submit', onSearchFormSubmit);
-divGalleryEl.addEventListener('click', onGalleryCardClick);
-
-btnLoadMoreEl.classList.add('displayNone');
+const imgApiService = new ImgApiService();
 
 async function onSearchFormSubmit(evt) {
     evt.preventDefault();
-    const name = inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
+    const name = elems.inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
     evt.target.reset();
     if (name === "") {
         return Notiflix.Report.warning('WORNING!', 'Please enter request', 'Ok');
     };
     cleanPage();
+    imgApiService.searchQuery = name;
+    console.log('imgApiService=',imgApiService.searchParams);
     try {
         Loading.circle({onSearchFormSubmit: true, svgSize: '50px',});
-        const dataObj = await fetchImages(name);
+        const dataObj = await imgApiService.fetchImages();
         Loading.remove();
         const dataImg = dataObj.data.hits;
         console.log(dataImg);
@@ -38,41 +37,31 @@ async function onSearchFormSubmit(evt) {
             return Notiflix.Notify.success('Sorry, there are no images matching your search query. Please try again.');  
         };
         Notiflix.Notify.success(`Hooray! We found ${dataObj.data.totalHits} images.`);
-        btnLoadMoreEl.classList.remove('displayNone');
-        return divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
+        elems.btnLoadMoreEl.classList.remove('displayNone');
+        return elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
     } catch (error) {
         console.log('❌ Worning!', error);
         Notiflix.Notify.failure('❌ Worning! ERROR!');
     };
 };
 
-function createListMarkup(data) {
-    return data.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-        return `
-                
-                    <div class="photo-card">
-                        <a href="${webformatURL}">
-                            <img class="card" src="${webformatURL}" alt="${tags}" loading="lazy" />
-                        </a>
-                        <div class="info">
-                            <p class="info-item">
-                                <b>Likes:</b> ${likes}
-                            </p>
-                            <p class="info-item">
-                                <b>Views:</b> ${views}
-                            </p>
-                            <p class="info-item">
-                                <b>Comments:</b> ${comments}
-                            </p>
-                            <p class="info-item">
-                                <b>Downloads:</b> ${downloads}
-                            </p>
-                        </div>
-                    </div>
-                
-                `;
-    }).join('');
-};
+async function onBtnLoadMoreClick(evt) {
+    try {
+        Loading.circle({onSearchFormSubmit: true, svgSize: '50px',});
+        const dataObj = await imgApiService.fetchImages();
+        Loading.remove();
+        const dataImg = dataObj.data.hits;
+        console.log(dataImg);
+        if (dataImg.length === 0) {
+            elems.btnLoadMoreEl.classList.add('displayNone');
+            return Notiflix.Notify.success('We are sorry, but you have reached the end of search results.');  
+        };
+        return elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
+    } catch (error) {
+        console.log('❌ Worning!', error);
+        Notiflix.Notify.failure('❌ Worning! ERROR!');
+    };
+}
 
 //Ф-ция:
 //     отменяет действия браузера по умолчанию;
@@ -80,36 +69,8 @@ function createListMarkup(data) {
 //     открывает слайдер (lightbox)    
 function onGalleryCardClick(evt) {
     evt.preventDefault();
-
     if(!evt.target.classList.contains('card')) {
         return;
     }
-
     openLightbox();
 };
-
-//Ф-ция - создает и открывает слайдер (lightbox - библиотека SimpleLightbox, класс SimpleLightbox, метод open()), с оригинальными (большими - original) изображениями;
-//     свойства - для описания изображений (подпись изображений):
-//             captionSelector - указывает элемент который содержит описание
-//             captionType - указывает где именно в элементе находится описание (атрибут, дата-атрибут, текст)
-//             captionsData - указывает в каком атрибуте хранится описание
-//             captionPosition - указывает положение описания (вверху, внизу, за пределами изображения)
-//             captionDelay - указывает задержку появления подписи
-//             enableKeyboard - позволяет навигацию с клавиатуры (<- ->) и выход при нажатии Esc
-function openLightbox() {
-    let lightbox = new SimpleLightbox('.photo-card a',
-        {
-            captionSelector: 'img',
-            captionType: 'attr',
-            captionsData: 'alt',
-            captionPosition: 'bottom',
-            captionDelay: 250,
-            enableKeyboard: true,
-        });
-    lightbox.open();
-};
-
-function cleanPage() {
-    divGalleryEl.innerHTML = '';
-};
-
