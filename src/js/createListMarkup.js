@@ -28,8 +28,8 @@ function createListMarkup(data) {
     }).join('');
 };
 
-function cleanPage() {
+function cleanGallery() {
     elems.divGalleryEl.innerHTML = '';
 };
 
-export { createListMarkup, cleanPage };
+export { createListMarkup, cleanGallery };

@@ -12,12 +12,12 @@ export default class ImgApiService {
         this.orientation = "orientation=horizontal";
         this.safesearch = "safesearch=true";
         this.page = 1;
-        this.per_page = 'per_page=40';
+        this.per_page = 40;
         this.searchQuery = '';
     }
 
     async fetchImages() {
-        const searchParams = `${this.lang}&${this.image_type}&${this.orientation}&${this.safesearch}&page=${this.page}&${this.per_page}`;
+        const searchParams = `${this.lang}&${this.image_type}&${this.orientation}&${this.safesearch}&page=${this.page}&per_page=${this.per_page}`;
         const dataObject = await axios.get(`${this.BASE_URL}${this.API_KEY}&q=${this.searchQuery}&${searchParams}`);
         console.log(dataObject);
         this.page += 1;
@@ -30,5 +30,9 @@ export default class ImgApiService {
     
     set query(newQuery) {
         this.searchQuery = newQuery;
+    }
+
+    resetPage() {
+        this.page = 1;
     }
 };

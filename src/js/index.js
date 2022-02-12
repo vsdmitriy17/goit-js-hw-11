@@ -6,7 +6,7 @@ import ImgApiService from "./fetchImages.js";
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { openLightbox } from "./openLightbox.js";
-import { createListMarkup, cleanPage } from "./createListMarkup.js";
+import { createListMarkup, cleanGallery } from "./createListMarkup.js";
 import { notiflixOptions } from "./notiflixOptions.js";
 
 elems.formEl.addEventListener('submit', onSearchFormSubmit);
@@ -19,16 +19,19 @@ const imgApiService = new ImgApiService();
 
 async function onSearchFormSubmit(evt) {
     evt.preventDefault();
+    if (!elems.btnLoadMoreEl.classList.contains('displayNone')) {
+        elems.btnLoadMoreEl.classList.add('displayNone');
+    };
     const name = elems.inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
     evt.target.reset();
     if (name === "") {
         return Notiflix.Report.warning('WORNING!', 'Please enter request', 'Ok');
     };
-    cleanPage();
+    cleanGallery();
+    imgApiService.resetPage();
     imgApiService.searchQuery = name;
-    console.log('imgApiService=',imgApiService.searchParams);
     try {
-        Loading.circle({onSearchFormSubmit: true, svgSize: '50px',});
+        Loading.circle({onSearchFormSubmit: true, svgSize: '80px',});
         const dataObj = await imgApiService.fetchImages();
         Loading.remove();
         const dataImg = dataObj.data.hits;
@@ -48,12 +51,14 @@ async function onSearchFormSubmit(evt) {
 
 async function onBtnLoadMoreClick(evt) {
     try {
-        Loading.circle({onSearchFormSubmit: true, svgSize: '50px',});
+        Loading.circle({ onSearchFormSubmit: true, svgSize: '80px', });
+        elems.btnLoadMoreEl.disabled = true;
         const dataObj = await imgApiService.fetchImages();
+        elems.btnLoadMoreEl.disabled = false;
         Loading.remove();
         const dataImg = dataObj.data.hits;
         console.log(dataImg);
-        if (dataImg.length === 0) {
+        if (imgApiService.page > (dataObj.data.totalHits / imgApiService.per_page)) {
             elems.btnLoadMoreEl.classList.add('displayNone');
             return Notiflix.Notify.success('We are sorry, but you have reached the end of search results.');  
         };
