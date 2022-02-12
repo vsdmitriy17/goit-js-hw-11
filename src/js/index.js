@@ -17,8 +17,6 @@ elems.btnLoadMoreEl.classList.add('displayNone');
 
 const imgApiService = new ImgApiService();
 
-
-
 async function onSearchFormSubmit(evt) {
     evt.preventDefault();
     if (!elems.btnLoadMoreEl.classList.contains('displayNone')) {
