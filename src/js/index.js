@@ -44,7 +44,7 @@ function createListMarkup(data) {
                 
                     <div class="photo-card">
                         <a href="${webformatURL}">
-                            <img class="photo" src="${webformatURL}" alt="${tags}" loading="lazy" />
+                            <img class="card" src="${webformatURL}" alt="${tags}" loading="lazy" />
                         </a>
                         <div class="info">
                             <p class="info-item">
@@ -73,7 +73,7 @@ function createListMarkup(data) {
 function onGalleryCardClick(evt) {
     evt.preventDefault();
 
-    if(!evt.target.classList.contains('photo-card')) {
+    if(!evt.target.classList.contains('card')) {
         return;
     }
 
