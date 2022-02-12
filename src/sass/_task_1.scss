@@ -119,8 +119,11 @@
 }
 
 .info {
-    padding-left: 20px;
-    @include font(black, 400, 18px, 1.17, 0.02em);
+    padding-left: 5px;
+    padding-right: 5px;
+    @include font(black, 400, 12px, 1.17, 0.01em);
+    display: flex;
+    justify-content: space-between;
 }
 
 .card {

@@ -8,7 +8,7 @@ const notiflixOptions = Notiflix.Notify.init({
   opacity: 1,
   borderRadius: '5px',
   rtl: false,
-  timeout: 3000,
+  timeout: 4000,
   messageMaxLength: 110,
   backOverlay: false,
   backOverlayColor: 'rgba(0,0,0,0.5)',
