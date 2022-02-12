@@ -92,6 +92,10 @@
     }
 }
 
+.load-more.displayNone {
+    display: none;
+}
+
 .gallery {
     display: flex;
     flex-wrap: wrap;

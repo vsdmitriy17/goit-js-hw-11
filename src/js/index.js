@@ -13,34 +13,37 @@ const btnSearchEl = document.querySelector('.form__btn');
 const divGalleryEl = document.querySelector('.gallery');
 const btnLoadMoreEl = document.querySelector('.load-more');
 
-//btnDisable();
+
 
 formEl.addEventListener('submit', onSearchFormSubmit);
 divGalleryEl.addEventListener('click', onGalleryCardClick);
 
+btnLoadMoreEl.classList.add('displayNone');
+
 async function onSearchFormSubmit(evt) {
     evt.preventDefault();
     const name = inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
-    btnDisable();
-
+    evt.target.reset();
+    if (name === "") {
+        return Notiflix.Report.warning('WORNING!', 'Please enter request', 'Ok');
+    };
+    cleanPage();
     try {
         Loading.circle({onSearchFormSubmit: true, svgSize: '50px',});
         const dataObj = await fetchImages(name);
         Loading.remove();
-        evt.target.reset();
-        btnDisable();
         const dataImg = dataObj.data.hits;
         console.log(dataImg);
         if (dataImg.length === 0) {
             return Notiflix.Notify.success('Sorry, there are no images matching your search query. Please try again.');  
-        }
+        };
         Notiflix.Notify.success(`Hooray! We found ${dataObj.data.totalHits} images.`);
+        btnLoadMoreEl.classList.remove('displayNone');
         return divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
-
     } catch (error) {
         console.log('❌ Worning!', error);
         Notiflix.Notify.failure('❌ Worning! ERROR!');
-    }
+    };
 };
 
 function createListMarkup(data) {
@@ -106,15 +109,7 @@ function openLightbox() {
     lightbox.open();
 };
 
-// function cleanPage() {
-//     divCardEl.innerHTML = '';
-//     ulCardsEl.innerHTML = '';
-// };
-
-// Ф-ция проверяет заполнение полей формы, если все поля заполнены - кнопка активна, если хотя бы одно поле пусто - кнопка неактивна
-function btnDisable() {
-    if (inputEl.value.trim() === "") {
-        return btnSearchEl.disabled = true;
-    }
-    return btnSearchEl.disabled = false;
+function cleanPage() {
+    divGalleryEl.innerHTML = '';
 };
+
