@@ -9,8 +9,8 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 //             captionPosition - указывает положение описания (вверху, внизу, за пределами изображения)
 //             captionDelay - указывает задержку появления подписи
 //             enableKeyboard - позволяет навигацию с клавиатуры (<- ->) и выход при нажатии Esc
-function openLightbox() {
-    let lightbox = new SimpleLightbox(".gallery a",
+
+    let lightbox = new SimpleLightbox(".photo-card a",
         {
             captionSelector: 'img',
             captionType: 'attr',
@@ -19,8 +19,6 @@ function openLightbox() {
             captionDelay: 250,
             enableKeyboard: true,
         });
-    lightbox.refresh();
-    lightbox.open();
-};
 
-export { openLightbox };
+
+export { lightbox };

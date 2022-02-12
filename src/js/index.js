@@ -5,7 +5,7 @@ import { elems } from "./elems.js";
 import ImgApiService from "./fetchImages.js";
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { openLightbox } from "./openLightbox.js";
+import { lightbox } from "./openLightbox.js";
 import { createListMarkup, cleanGallery } from "./createListMarkup.js";
 import { notiflixOptions, notiflixReportOptions } from "./notiflixOptions.js";
 
@@ -43,7 +43,8 @@ async function onSearchFormSubmit(evt) {
         };
         Notiflix.Notify.success(`Hooray! We found ${dataObj.data.totalHits} images.`);
         elems.btnLoadMoreEl.classList.remove('displayNone');
-        return elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
+        elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
+        lightbox.refresh();
         
     } catch (error) {
         console.log('❌ Worning!', error);
@@ -68,6 +69,7 @@ async function onBtnLoadMoreClick(evt) {
             return Notiflix.Notify.success('We are sorry, but you have reached the end of search results.');  
         };
         elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
+        lightbox.refresh();
         const { height: cardHeight } = elems.divGalleryEl.firstElementChild.getBoundingClientRect();
         window.scrollBy({
             top: cardHeight*2,
@@ -89,7 +91,7 @@ function onGalleryCardClick(evt) {
     if(!evt.target.classList.contains('card')) {
         return;
     }
-    openLightbox();
+    lightbox.open();
 };
 
 // function createDataImg() {
