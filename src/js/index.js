@@ -42,6 +42,7 @@ async function onSearchFormSubmit(evt) {
     } catch (error) {
         console.log('❌ Worning!', error);
         Notiflix.Notify.failure('❌ Worning! ERROR!');
+        Loading.remove();
     };
 };
 
@@ -60,6 +61,7 @@ async function onBtnLoadMoreClick(evt) {
     } catch (error) {
         console.log('❌ Worning!', error);
         Notiflix.Notify.failure('❌ Worning! ERROR!');
+        Loading.remove();
     };
 }
 
