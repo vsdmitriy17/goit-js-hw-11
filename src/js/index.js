@@ -1,6 +1,7 @@
 import '../sass/main.scss';
 import axios from "axios";
 import Notiflix from 'notiflix';
+import { Loading } from 'notiflix/build/notiflix-loading-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchImages } from "./fetchImages.js";
@@ -23,7 +24,9 @@ async function onSearchFormSubmit(evt) {
     btnDisable();
 
     try {
+        Loading.circle({onSearchFormSubmit: true, svgSize: '50px',});
         const dataObj = await fetchImages(name);
+        Loading.remove();
         const dataImg = dataObj.data.hits;
         console.log(dataImg);
         if (dataImg.length === 0) {
