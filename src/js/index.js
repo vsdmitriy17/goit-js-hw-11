@@ -17,12 +17,7 @@ elems.btnLoadMoreEl.classList.add('displayNone');
 
 const imgApiService = new ImgApiService();
 
-// const { height: cardHeight } = elems.divGalleryEl.firstElementChild.getBoundingClientRect();
 
-// window.scrollBy({
-//     top: cardHeight * 2,
-//     behavior: 'smooth',
-// });
 
 async function onSearchFormSubmit(evt) {
     evt.preventDefault();
@@ -51,6 +46,7 @@ async function onSearchFormSubmit(evt) {
         Notiflix.Notify.success(`Hooray! We found ${dataObj.data.totalHits} images.`);
         elems.btnLoadMoreEl.classList.remove('displayNone');
         return elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
+        
     } catch (error) {
         console.log('❌ Worning!', error);
         Notiflix.Notify.failure('❌ Worning! ERROR!');
@@ -73,7 +69,12 @@ async function onBtnLoadMoreClick(evt) {
             elems.btnLoadMoreEl.classList.add('displayNone');
             return Notiflix.Notify.success('We are sorry, but you have reached the end of search results.');  
         };
-        return elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
+        elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
+        const { height: cardHeight } = elems.divGalleryEl.firstElementChild.getBoundingClientRect();
+        window.scrollBy({
+            top: cardHeight*2,
+            behavior: 'smooth',
+        });
     } catch (error) {
         console.log('❌ Worning!', error);
         Notiflix.Notify.failure('❌ Worning! ERROR!');
