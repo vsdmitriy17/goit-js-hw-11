@@ -4,6 +4,37 @@
     padding-top: 88px;
 }
 
+.backGround {
+    background-color: rgb(220, 220, 247);
+    text-align: center;
+}
+.backGround.overlay {  /* Фоновое изображение */
+    min-height: 730px;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+
+    background-image: linear-gradient( /* Затемнение фонового изображения */
+        to right, rgba(47, 48, 58, 0.4), rgba(47, 48, 58, 0.4)),
+        url(../images/bgImage_1600.jpg); /* Изображение для фона*/
+    background-repeat: no-repeat; /* Не множить*/
+    background-position: center; /* Центрировать*/
+    background-size: cover; /* заполнить блок полностью */
+}
+
+.page-title {
+    font-family: Roboto;
+    @include font(#FFFFFF, 900, 64px, 1.36, 0.06em);
+    text-transform: uppercase;
+    margin-top: 150px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-title.isHidden {
+    display: none;
+}
+
 .container {
     width: 100%;
     padding-left: 15px;
@@ -107,6 +138,7 @@
     flex-basis: calc(100% / 4 - 20px); /*----calc((100% / кол-во элементов в строке - значение марджина)----*/
     margin-right: 20px;
     margin-bottom: 20px;
+    background-color: rgb(229, 229, 240);
     border: 1px solid rgb(142, 142, 235);
     border-radius: 5px;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);

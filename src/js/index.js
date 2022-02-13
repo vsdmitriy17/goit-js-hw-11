@@ -39,8 +39,10 @@ async function onSearchFormSubmit(evt) {
         console.log(dataImg);
 
         if (dataImg.length === 0) {
+            bgImageAdd();
             return Notiflix.Notify.success('Sorry, there are no images matching your search query. Please try again.');  
         };
+        bgImageRemove();
         Notiflix.Notify.success(`Hooray! We found ${dataObj.data.totalHits} images.`);
         elems.btnLoadMoreEl.classList.remove('displayNone');
         elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
@@ -101,3 +103,19 @@ function onGalleryCardClick(evt) {
 //     const dataImg = dataObj.data.hits;
 //     console.log(dataImg);
 // };
+
+function bgImageRemove() {
+    if (elems.bodyEl.classList.contains('overlay')) {
+        elems.pageTitle.classList.add('isHidden');
+        elems.bodyEl.classList.remove('overlay');
+    }
+    return;
+};
+
+function bgImageAdd() {
+    if (!elems.bodyEl.classList.contains('overlay')) {
+        elems.pageTitle.classList.remove('isHidden');
+        elems.bodyEl.classList.add('overlay');
+    }
+    return;
+};
