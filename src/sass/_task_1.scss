@@ -54,6 +54,11 @@
     padding-top: 14px;
     padding-bottom: 14px;
     width: 100%;
+
+    background-image: url(../images/logo.png); /* Изображение для фона*/
+    background-repeat: no-repeat; /* Не множить*/
+    background-position: left; /* Центрировать*/
+    background-size:contain; /* заполнить блок полностью */
 }
 
 .form__input {
