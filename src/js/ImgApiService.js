@@ -1,4 +1,6 @@
 import axios from "axios";
+import Notiflix from 'notiflix';
+import { Loading } from 'notiflix/build/notiflix-loading-aio';
 
 export default class ImgApiService {
     constructor() {
@@ -17,10 +19,12 @@ export default class ImgApiService {
     }
 
     async fetchImages() {
+        Loading.circle({onSearchFormSubmit: true, svgSize: '80px',}); // библ. Notiflix
         const searchParams = `${this.lang}&${this.image_type}&${this.orientation}&${this.safesearch}&page=${this.page}&per_page=${this.per_page}`;
-        const dataObject = await axios.get(`${this.BASE_URL}${this.API_KEY}&q=${this.searchQuery}&${searchParams}`);
+        const dataObject = await axios.get(`${this.BASE_URL}${this.API_KEY}&q=${this.searchQuery}&${searchParams}`); // запрос через библ. axios
         console.log(dataObject);
-        this.page += 1;
+        this.page += 1; //увеличиваем номер стр. при каждом запросе
+        Loading.remove(); // библ. Notiflix
         return dataObject;
     }
     

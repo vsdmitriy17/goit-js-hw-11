@@ -9,6 +9,7 @@ import { elems } from "./elems.js";
 import { bgImageRemove, bgImageAdd } from "./bgImage.js"
 import { btnLoadMoreAdd, btnLoadMoreRemove } from "./btnLoadMore.js";
 import ImgApiService from "./ImgApiService.js";
+import { errorCatch } from "./errorCatch.js";
 import { lightbox } from "./openLightbox.js";
 import { galleryCollectionCreate, galleryClean, galleryStartScroll } from "./gallery.js";
 import { notiflixOptions, notiflixReportOptions } from "./notiflixOptions.js";
@@ -21,29 +22,46 @@ btnLoadMoreRemove();
 
 const imgApiService = new ImgApiService();
 
+// Колбек ф-ция события 'submit' на элементе formEl:
+//     1) отменяет действия браузера по умолчанию;
+//     2) выключает кнопку btnLoadMore (если она включена)
+//     3) проверяет если текущее значение поля input (name):
+//          - пустая строка, то выводит на экран сообщение "WORNING!', 'Please enter request.";
+//          - иначе:
+//                 1. присваивает значение "name" параметру "searchQuery" объекта imgApiService;
+//                 2. очищает поле input;
+//                 3. возвращает дефолтное занчение параметра "рage" объекта imgApiService
+//                 4. отправляет запрос на API, по "searchQuery" и получает объект данных "dataObj", выводит в консоль "dataObj"
+//                 5. выбирает массив данных для отрисовки "dataImg", выводит в консоль "dataImg"
+//                 6. проверяет если "dataImg":
+//                      - пуст, то выводит на экран сообщение 'Sorry, there are no images matching your search query. Please try again.',
+//                        возвращает стартовое изображение и текст (если их не было)
+//                      - иначе, убирает стартовое изображение и текст (если они были),
+//                        выводит на экран сообщение `Hooray! We found ${кол-во найденных изображений} images.`,
+//                        включает кнопку btnLoadMore (если она выключена),
+//                        отрисовывает галерею изображений.
+//     4) если во время запроса произошла ошибка - выводит сообщение в консоль и на экран
 async function onSearchFormSubmit(evt) {
     evt.preventDefault();
     btnLoadMoreRemove();
     const name = elems.inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
-    evt.target.reset();
     if (name === "") {
         return Notiflix.Report.warning('WORNING!', 'Please enter request.', 'Ok');
     };
+    evt.target.reset();
     galleryClean();
     imgApiService.resetPage();
     imgApiService.searchQuery = name;
-    try {
 
-        Loading.circle({onSearchFormSubmit: true, svgSize: '80px',});
+    try {
         const dataObj = await imgApiService.fetchImages();
-        Loading.remove();
         const dataImg = dataObj.data.hits;
-        console.log(dataImg);
 
         if (dataImg.length === 0) {
             bgImageAdd();
             return Notiflix.Notify.success('Sorry, there are no images matching your search query. Please try again.');  
         };
+
         bgImageRemove();
         Notiflix.Notify.success(`Hooray! We found ${dataObj.data.totalHits} images.`);
         btnLoadMoreAdd();
@@ -54,26 +72,30 @@ async function onSearchFormSubmit(evt) {
     };
 };
 
+// Колбек ф-ция события 'submit' на элементе formEl:
+//     1. деактивирует кнопку btnLoadMoreEl;
+//     2. отправляет запрос на API, по "searchQuery" и получает объект данных "dataObj", выводит в консоль "dataObj"
+//     3. выбирает массив данных для отрисовки "dataImg", выводит в консоль "dataImg"
+//     4. активирует кнопку btnLoadMoreEl;
+//     5. отрисовывает галерею изображений.
+//     6. скролит экран на высоту в две карточки галереи
+//     7. если номер текущего запроса больше отношения колва всех стр. в API, к кол-ву элементов в одном запросе, то:
+//        - выключает кнопку btnLoadMoreEl
+//        - выводит на экран сообщение 'We are sorry, but you have reached the end of search results.'
+//     8. если во время запроса произошла ошибка - выводит сообщение в консоль и на экран
 async function onBtnLoadMoreClick(evt) {
     try {
         elems.btnLoadMoreEl.disabled = true;
-
-        Loading.circle({ onSearchFormSubmit: true, svgSize: '80px', });
         const dataObj = await imgApiService.fetchImages();
-        Loading.remove();
         const dataImg = dataObj.data.hits;
-        console.log(dataImg);
-
-        elems.btnLoadMoreEl.disabled = false;
-        
         galleryCollectionCreate(dataImg);
         galleryStartScroll();
+        elems.btnLoadMoreEl.disabled = false;
 
         if (imgApiService.page > (dataObj.data.totalHits / imgApiService.per_page)) {
             btnLoadMoreRemove();
             return Notiflix.Notify.success('We are sorry, but you have reached the end of search results.');  
         };
-        
     } catch (error) {
         errorCatch(error);
     };
@@ -90,17 +112,3 @@ function onGalleryCardClick(evt) {
     }
     lightbox.open();
 };
-
-// function createDataImg() {
-//     Loading.circle({ onSearchFormSubmit: true, svgSize: '80px', });
-//     const dataObj = await imgApiService.fetchImages();
-//     Loading.remove();
-//     const dataImg = dataObj.data.hits;
-//     console.log(dataImg);
-// };
-
-function errorCatch(error) {
-    console.log('❌ Worning!', error);
-    Notiflix.Notify.failure('❌ Worning! ERROR!');
-    Loading.remove();
-}
