@@ -1,8 +1,12 @@
 import { elems } from "./elems.js";
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import { lightbox } from "./openLightbox.js";
 
-function createListMarkup(data) {
-    return data.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-        return `
+function galleryCollectionCreate(data) {
+    elems.divGalleryEl.insertAdjacentHTML('beforeend',
+        (data.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
+            return `
                 
                     <div class="photo-card">
                         <a href="${largeImageURL}">
@@ -23,13 +27,21 @@ function createListMarkup(data) {
                             </p>
                         </div>
                     </div>
-                
                 `;
-    }).join('');
+        }).join('')));
+    lightbox.refresh();
 };
 
-function cleanGallery() {
+function galleryClean() {
     elems.divGalleryEl.innerHTML = '';
 };
 
-export { createListMarkup, cleanGallery };
+function galleryStartScroll() {
+    const { height: cardHeight } = elems.divGalleryEl.firstElementChild.getBoundingClientRect();
+    window.scrollBy({
+        top: cardHeight*2,
+        behavior: 'smooth',
+    });
+}
+
+export { galleryCollectionCreate, galleryClean, galleryStartScroll };

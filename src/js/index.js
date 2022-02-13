@@ -1,33 +1,35 @@
 import '../sass/main.scss';
+//Библиотеки Notiflix, SimpleLightbox
 import Notiflix from 'notiflix';
 import { Loading } from 'notiflix/build/notiflix-loading-aio';
-import { elems } from "./elems.js";
-import ImgApiService from "./fetchImages.js";
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+// элементы, классы, ф-ции
+import { elems } from "./elems.js";
+import { bgImageRemove, bgImageAdd } from "./bgImage.js"
+import { btnLoadMoreAdd, btnLoadMoreRemove } from "./btnLoadMore.js";
+import ImgApiService from "./ImgApiService.js";
 import { lightbox } from "./openLightbox.js";
-import { createListMarkup, cleanGallery } from "./createListMarkup.js";
+import { galleryCollectionCreate, galleryClean, galleryStartScroll } from "./gallery.js";
 import { notiflixOptions, notiflixReportOptions } from "./notiflixOptions.js";
 
 elems.formEl.addEventListener('submit', onSearchFormSubmit);
 elems.divGalleryEl.addEventListener('click', onGalleryCardClick);
 elems.btnLoadMoreEl.addEventListener('click', onBtnLoadMoreClick);
 
-elems.btnLoadMoreEl.classList.add('displayNone');
+btnLoadMoreRemove();
 
 const imgApiService = new ImgApiService();
 
 async function onSearchFormSubmit(evt) {
     evt.preventDefault();
-    if (!elems.btnLoadMoreEl.classList.contains('displayNone')) {
-        elems.btnLoadMoreEl.classList.add('displayNone');
-    };
+    btnLoadMoreRemove();
     const name = elems.inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
     evt.target.reset();
     if (name === "") {
         return Notiflix.Report.warning('WORNING!', 'Please enter request.', 'Ok');
     };
-    cleanGallery();
+    galleryClean();
     imgApiService.resetPage();
     imgApiService.searchQuery = name;
     try {
@@ -44,14 +46,11 @@ async function onSearchFormSubmit(evt) {
         };
         bgImageRemove();
         Notiflix.Notify.success(`Hooray! We found ${dataObj.data.totalHits} images.`);
-        elems.btnLoadMoreEl.classList.remove('displayNone');
-        elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
-        lightbox.refresh();
+        btnLoadMoreAdd();
+        galleryCollectionCreate(dataImg);
         
     } catch (error) {
-        console.log('❌ Worning!', error);
-        Notiflix.Notify.failure('❌ Worning! ERROR!');
-        Loading.remove();
+        errorCatch(error);
     };
 };
 
@@ -66,25 +65,21 @@ async function onBtnLoadMoreClick(evt) {
         console.log(dataImg);
 
         elems.btnLoadMoreEl.disabled = false;
+        
+        galleryCollectionCreate(dataImg);
+        galleryStartScroll();
+
         if (imgApiService.page > (dataObj.data.totalHits / imgApiService.per_page)) {
-            elems.btnLoadMoreEl.classList.add('displayNone');
+            btnLoadMoreRemove();
             return Notiflix.Notify.success('We are sorry, but you have reached the end of search results.');  
         };
-        elems.divGalleryEl.insertAdjacentHTML('beforeend', createListMarkup(dataImg));
-        lightbox.refresh();
-        const { height: cardHeight } = elems.divGalleryEl.firstElementChild.getBoundingClientRect();
-        window.scrollBy({
-            top: cardHeight*2,
-            behavior: 'smooth',
-        });
+        
     } catch (error) {
-        console.log('❌ Worning!', error);
-        Notiflix.Notify.failure('❌ Worning! ERROR!');
-        Loading.remove();
+        errorCatch(error);
     };
 }
 
-//Ф-ция:
+// Колбек ф-ция события 'click' на элементе btnLoadMoreEl:
 //     отменяет действия браузера по умолчанию;
 //     проверяет условие клика по элементу img (не реагирует на клик на др элементы);
 //     открывает слайдер (lightbox)    
@@ -104,18 +99,8 @@ function onGalleryCardClick(evt) {
 //     console.log(dataImg);
 // };
 
-function bgImageRemove() {
-    if (elems.bodyEl.classList.contains('overlay')) {
-        elems.pageTitle.classList.add('isHidden');
-        elems.bodyEl.classList.remove('overlay');
-    }
-    return;
-};
-
-function bgImageAdd() {
-    if (!elems.bodyEl.classList.contains('overlay')) {
-        elems.pageTitle.classList.remove('isHidden');
-        elems.bodyEl.classList.add('overlay');
-    }
-    return;
-};
+function errorCatch(error) {
+    console.log('❌ Worning!', error);
+    Notiflix.Notify.failure('❌ Worning! ERROR!');
+    Loading.remove();
+}
