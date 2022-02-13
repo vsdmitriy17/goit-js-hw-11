@@ -88,7 +88,7 @@ async function onBtnLoadMoreClick(evt) {
 //     открывает слайдер (lightbox)    
 function onGalleryCardClick(evt) {
     evt.preventDefault();
-    if(!evt.target.classList.contains('card')) {
+    if(!evt.currentTarget.classList.contains('card')) {
         return;
     }
     lightbox.open();

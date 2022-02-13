@@ -10,10 +10,10 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 //             captionDelay - указывает задержку появления подписи
 //             enableKeyboard - позволяет навигацию с клавиатуры (<- ->) и выход при нажатии Esc
 
-    let lightbox = new SimpleLightbox(".photo-card a",
+    let lightbox = new SimpleLightbox(".gallery a",
         {
-            captionSelector: 'img',
-            captionType: 'attr',
+           // captionSelector: 'img',
+            //captionType: 'attr',
             captionsData: 'alt',
             captionPosition: 'bottom',
             captionDelay: 250,
