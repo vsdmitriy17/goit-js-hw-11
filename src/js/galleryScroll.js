@@ -29,7 +29,7 @@ async function galleryScroll() {
         galleryCollectionCreate(dataImg);
         console.log(imgApiService.page);
 
-        if (imgApiService.page > (dataObj.data.totalHits / imgApiService.per_page)) {
+        if (dataImg.length !== 0 && imgApiService.page > (dataObj.data.totalHits / imgApiService.per_page)) {
             window.removeEventListener("scroll", galleryScroll);
             return Notiflix.Notify.success('We are sorry, but you have reached the end of search results.');
         };
