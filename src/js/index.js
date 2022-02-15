@@ -149,6 +149,7 @@ async function onSearchFormScroll(evt) {
         const dataImg = dataObj.data.hits;
 
         if (dataImg.length === 0) {
+            window.removeEventListener("scroll", galleryScroll);
             bgImageAdd();
             return Notiflix.Notify.success('Sorry, there are no images matching your search query. Please try again.');  
         };
