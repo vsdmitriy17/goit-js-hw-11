@@ -35,30 +35,89 @@
     display: none;
 }
 
-.container {
-    width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-.search-form {
+.header {
     position: fixed;
     top: 0;
     left: 0;
-    @include font(black, 400, 18px, 1.17, 0.02em);
-    text-align: left;
+    background-color: rgb(142, 142, 235);
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+    min-height: 80px;
+    width: 100%;
+}
+
+.header-nav {
+    @include font(white, 400, 18px, 1.17, 0.02em);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.header-img {
+    display: block;
+    height: 80px;
+    margin-right: 160px;
+}
+
+.radio-group {
+    margin-right: 170px;
+}
+
+.site-nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(142, 142, 235);
-    padding-top: 14px;
-    padding-bottom: 14px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.site-nav-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.site-nav-item:not(:last-child) {
+    margin-right: 30px;
+}
+
+.radio-input {
+    margin-right: 10px;
+}
+
+.form__label {
+    cursor: pointer;
+
+    @include font(white, 700, 18px, 1.88, 0.06em);
+
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover, &:focus {
+        color: #2a2191;
+    }
+
+    padding-top: 22px;
+    padding-bottom: 22px;
+
+    .radio-input:checked + & {
+        color: #2a2191;
+    }
+}
+
+.search-form {
+    @include font(black, 400, 18px, 1.17, 0.02em);
+    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     width: 100%;
 
-    background-image: url(../images/logo.png); /* Изображение для фона*/
-    background-repeat: no-repeat; /* Не множить*/
-    background-position: left; /* Центрировать*/
-    background-size:contain; /* заполнить блок полностью */
+    // background-image: url(../images/logo.png); /* Изображение для фона*/
+    // background-repeat: no-repeat; /* Не множить*/
+    // background-position: left; /* Центрировать*/
+    // background-size:contain; /* заполнить блок полностью */
 }
 
 .form__input {
@@ -133,6 +192,8 @@
 }
 
 .gallery {
+    padding-left: 15px;
+    padding-right: 15px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

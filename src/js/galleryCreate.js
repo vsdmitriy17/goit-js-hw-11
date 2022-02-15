@@ -36,12 +36,4 @@ function galleryClean() {
     elems.divGalleryEl.innerHTML = '';
 };
 
-function galleryStartScroll() {
-    const { height: cardHeight } = elems.divGalleryEl.firstElementChild.getBoundingClientRect();
-    window.scrollBy({
-        top: cardHeight*2,
-        behavior: 'smooth',
-    });
-}
-
-export { galleryCollectionCreate, galleryClean, galleryStartScroll };
+export { galleryCollectionCreate, galleryClean };
