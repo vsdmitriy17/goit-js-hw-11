@@ -57,11 +57,11 @@
 .header-img {
     display: block;
     height: 80px;
-    margin-right: 160px;
+    margin-right: 100px;
 }
 
 .radio-group {
-    margin-right: 170px;
+    margin-right: 100px;
 }
 
 .site-nav {
@@ -226,4 +226,8 @@
 
 .card {
     width: 100%;
+}
+
+.sentinel {
+    display: none;
 }

@@ -11,6 +11,7 @@ import { btnLoadMoreAdd, btnLoadMoreRemove } from "./btnLoadMore.js";
 import { galleryScroll, galleryStartScroll } from "./galleryScroll.js"
 import ImgApiService from "./ImgApiService.js";
 import { errorCatch } from "./errorCatch.js";
+import { galleryScrollIo, sentinelElAdd, sentinelElRemove, observerDiconnect } from "./scrollIo.js"
 import { lightbox } from "./openLightbox.js";
 import { galleryCollectionCreate, galleryClean } from "./galleryCreate.js";
 import { notiflixOptions, notiflixReportOptions } from "./notiflixOptions.js";
@@ -21,6 +22,7 @@ elems.divGalleryEl.addEventListener('click', onGalleryCardClick);
 
 
 btnLoadMoreRemove();
+sentinelElRemove();
 
 const imgApiService = new ImgApiService();
 
@@ -32,8 +34,10 @@ function onSearchSubmit(evt) {
     evt.preventDefault();
     if (evt.currentTarget.elements.functions.value === 'onBtn') {
         return onSearchFormSubmit(evt);
+    } else if (evt.currentTarget.elements.functions.value === 'onScroll') { 
+        return onSearchFormScroll(evt);
     };
-    return onSearchFormScroll(evt);
+    return onSearchFormScrollIo(evt);
 };
 
 // Ф-ция события 'submit' на элементе formEl:
@@ -56,6 +60,7 @@ function onSearchSubmit(evt) {
 //     3) если во время запроса произошла ошибка - выводит сообщение в консоль и на экран
 async function onSearchFormSubmit(evt) {
     btnLoadMoreRemove();
+    sentinelElRemove();
     window.removeEventListener("scroll", galleryScroll);
     const name = elems.inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
     if (name === "") {
@@ -135,6 +140,7 @@ async function onBtnLoadMoreClick(evt) {
 //     3) если во время запроса произошла ошибка - выводит сообщение в консоль и на экран
 async function onSearchFormScroll(evt) {
     btnLoadMoreRemove();
+    sentinelElRemove();
     const name = elems.inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
     if (name === "") {
         return Notiflix.Report.warning('WORNING!', 'Please enter request.', 'Ok');
@@ -159,6 +165,41 @@ async function onSearchFormScroll(evt) {
         galleryCollectionCreate(dataImg);
 
         window.addEventListener("scroll", galleryScroll);
+    } catch (error) {
+        errorCatch(error);
+    };
+};
+
+async function onSearchFormScrollIo(evt) {
+    btnLoadMoreRemove();
+    sentinelElRemove();
+    window.removeEventListener("scroll", galleryScroll);
+    const name = elems.inputEl.value.trim(); // текущее значение inputEl (текст введенный в inputEl), с игнорированием пробелов (trim())
+    if (name === "") {
+        return Notiflix.Report.warning('WORNING!', 'Please enter request.', 'Ok');
+    };
+    elems.inputEl.value = "";
+    galleryClean();
+    imgApiService.resetPage();
+    imgApiService.searchQuery = name;
+
+    try {
+        const dataObj = await imgApiService.fetchImages();
+        const dataImg = dataObj.data.hits;
+
+        if (dataImg.length === 0) {
+            window.removeEventListener("scroll", galleryScroll);
+            bgImageAdd();
+            return Notiflix.Notify.success('Sorry, there are no images matching your search query. Please try again.');  
+        };
+
+        bgImageRemove();
+        Notiflix.Notify.success(`Hooray! We found ${dataObj.data.totalHits} images.`);
+        galleryCollectionCreate(dataImg);
+
+        sentinelElAdd();
+        galleryScrollIo();
+
     } catch (error) {
         errorCatch(error);
     };
